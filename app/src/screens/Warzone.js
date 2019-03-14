@@ -1,5 +1,6 @@
 import React from 'react';
 import compose from 'recompose/compose';
+import lifecycle from 'recompose/lifecycle';
 import withState from 'recompose/withState';
 import withHandlers from 'recompose/withHandlers';
 import { graphql } from 'react-apollo';
@@ -37,7 +38,7 @@ const Warzone = ({
     <Container centered style={styles.container}>
       <Text title>Rock, Paper and Scissors</Text>
       <Text>
-        W: {wins} L: {losses} D: {draws} of Total: {matches}
+        W: {wins || '0'} L: {losses || '0'} D: {draws || '0'} of Total: {matches || '0'}
       </Text>
       <Spacer height={10} />
       <Scoreboard scoreA={scoreA} scoreB={scoreB} />
@@ -60,17 +61,22 @@ const styles = {
     backgroundColor: '#212121',
   },
 };
-const {
-  currentUser: { uid: playerId },
-} = FirebaseAuth();
 
 export default compose(
+  withState('playerId', 'setPlayerId', null),
+  lifecycle({
+    componentDidMount() {
+      const Auth = FirebaseAuth();
+      const playerId = Auth && Auth.currentUser ? Auth.currentUser.uid : null;
+      this.props.setPlayerId(playerId);
+    },
+  }),
   graphql(UserQuery.player, {
-    options: {
+    options: ({ playerId }) => ({
       variables: {
         playerId: String(playerId),
       },
-    },
+    }),
   }),
   graphql(UserMutation.saveMatch),
   RequestError(),
@@ -96,6 +102,7 @@ export default compose(
       setScoreA,
       setScoreB,
       mutate,
+      playerId,
       data: { refetch },
     }) => choice => {
       setComputating(true);
