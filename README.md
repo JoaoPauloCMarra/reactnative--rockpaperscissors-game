@@ -11,7 +11,7 @@ _Just a simple/fast project with, I hope, useful code..._
 - Change the Server information related to your firebase app
 - Download the `GoogleService-Info.plist` file and put on `app/ios` folder - (Firebase ios Setup)[https://firebase.google.com/docs/ios/setup]
 - Download the `google-service.json` file and put on `app/android/app` folder - (Firebase android Setup)[https://firebase.google.com/docs/android/setup]
-- make sure your firebase app have guest authentication enabled
+- make sure your firebase app have _guest authentication_ enabled
 - `yarn` / `npm run install` (let's continue as yarn by default)
 
 # ios
@@ -19,9 +19,15 @@ _Just a simple/fast project with, I hope, useful code..._
 - we have some Pods, so go on `app/ios` folder and `pod install`
 - back to `app` folder, and `yarn ios`
 
-
 # android
+
 - on `app` folder, `yarn android`
+
+# server
+
+- go to `functions` folder and run `yarn`
+- change the file to specify your project on Firebase
+- inside `funtions` folder, to deploy, simple run `yarn deploy`
 
 # HELP
 
