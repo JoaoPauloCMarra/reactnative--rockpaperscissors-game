@@ -6,7 +6,14 @@ const scoresRef = db.collection('scores');
 
 const findPlayer = async id => {
   const doc = await scoresRef.doc(id).get();
-  return { id: doc.id, ...doc.data() };
+  const data = doc.data();
+  return {
+    id: doc.id,
+    matches: data && data.matches ? data.matches : 0,
+    wins: data && data.wins ? data.wins : 0,
+    losses: data && data.losses ? data.losses : 0,
+    draws: data && data.draws ? data.draws : 0
+  };
 };
 
 const resolveFunctions = {
@@ -33,7 +40,7 @@ const resolveFunctions = {
           player.losses++;
           break;
         case 'd':
-          player.losses++;
+          player.draws++;
           break;
         default:
           break;
