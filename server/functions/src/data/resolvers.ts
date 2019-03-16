@@ -46,7 +46,8 @@ const resolveFunctions = {
           break;
       }
 
-      await scoresRef.doc(playerId).set(player);
+      const { matches, wins, losses, draws } = player;
+      await scoresRef.doc(playerId).set({ matches, wins, losses, draws });
       return player;
     }
   }

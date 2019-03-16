@@ -150,7 +150,7 @@ export default compose(
             setScoreB(nextScoreB);
             refetch();
             setComputating(false);
-          }, 2500);
+          }, 2000);
         })
         .catch(error => {
           console.tron.log('WarzoneMutationError: ', error);
