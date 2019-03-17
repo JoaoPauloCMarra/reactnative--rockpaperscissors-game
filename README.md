@@ -7,7 +7,7 @@ _Just a simple/fast project with, I hope, useful code..._
 
 ## Instructions
 
-- (Create your Firebase Application)[https://firebase.google.com/docs/android/setup]
+- (Create your Firebase Application)[https://console.firebase.google.com/]
 - Change the Server information related to your firebase app
 - Download the `GoogleService-Info.plist` file and put on `app/ios` folder - (Firebase ios Setup)[https://firebase.google.com/docs/ios/setup]
 - Download the `google-service.json` file and put on `app/android/app` folder - (Firebase android Setup)[https://firebase.google.com/docs/android/setup]
