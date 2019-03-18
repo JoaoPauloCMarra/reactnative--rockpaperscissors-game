@@ -4,33 +4,42 @@ admin.initializeApp();
 const db = admin.firestore();
 const scoresRef = db.collection('scores');
 
-const findPlayer = async id => {
+const findPlayer = async (id, withId = false) => {
   const doc = await scoresRef.doc(id).get();
   const data = doc.data();
-  return {
-    id: doc.id,
+  const player = {
+    name: data && data.name ? data.name : null,
     matches: data && data.matches ? data.matches : 0,
     wins: data && data.wins ? data.wins : 0,
     losses: data && data.losses ? data.losses : 0,
-    draws: data && data.draws ? data.draws : 0
+    draws: data && data.draws ? data.draws : 0,
+    last_match: data && data.last_match ? data.last_match : null
   };
+
+  return !!withId ? { id: doc.id, ...player } : player;
 };
 
 const resolveFunctions = {
   Query: {
     players: async () =>
       (await scoresRef.get()).docs.map(doc => ({ id: doc.id, ...doc.data() })),
-    player: async (_, { id }) => await findPlayer(id)
+    player: async (_, { id }) => await findPlayer(id, true)
   },
   Mutation: {
-    async saveMatch(_, { playerId, result }) {
+    saveInfo: async (_, { playerId, name }) => {
       const playerData = await findPlayer(playerId);
       const player = JSON.parse(JSON.stringify(playerData));
 
-      if (!player) {
-        throw new Error(`Couldn't find player with ID ${playerId}`);
-      }
+      if (name) player.name = name;
 
+      await scoresRef.doc(playerId).set(player);
+      return { id: playerId, player };
+    },
+    saveMatch: async (_, { playerId, result }) => {
+      const playerData = await findPlayer(playerId);
+      const player = JSON.parse(JSON.stringify(playerData));
+
+      player.last_match = new Date().toISOString();
       player.matches++;
       switch (result) {
         case 'w':
@@ -46,9 +55,8 @@ const resolveFunctions = {
           break;
       }
 
-      const { matches, wins, losses, draws } = player;
-      await scoresRef.doc(playerId).set({ matches, wins, losses, draws });
-      return player;
+      await scoresRef.doc(playerId).set(player);
+      return { id: playerId, player };
     }
   }
 };

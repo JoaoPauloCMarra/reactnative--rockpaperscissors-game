@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text as RNText } from 'react-native';
 
 import { moderateScale } from '../helpers/fontScale';
 
@@ -9,14 +9,14 @@ type Props = {
   title?: Boolean,
   bold?: Boolean,
 };
-const Container = ({ children, style = {}, size, color, title, bold }): Props => {
+const Text = ({ children, style = {}, size, color, title, bold }): Props => {
   const cmpStyle = [styles.text, style];
   if (title) cmpStyle.push(styles.title);
   if (bold) cmpStyle.push(styles.bold);
   if (size && size > 14) cmpStyle.push({ fontSize: size });
   if (color) cmpStyle.push({ color: color });
 
-  return <Text style={cmpStyle}>{children}</Text>;
+  return <RNText style={cmpStyle}>{children}</RNText>;
 };
 
 const styles = {
@@ -32,4 +32,4 @@ const styles = {
   },
 };
 
-export default Container;
+export default Text;

@@ -8,6 +8,15 @@ const saveMatch = gql`
   }
 `;
 
+const saveInfo = gql`
+  mutation SaveInfo($playerId: String!, $name: String) {
+    saveInfo(playerId: $playerId, name: $name) {
+      id
+    }
+  }
+`;
+
 export default {
   saveMatch,
+  saveInfo,
 };

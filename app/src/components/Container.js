@@ -20,7 +20,7 @@ const styles = {
     alignItems: 'center',
     backgroundColor: '#fff',
     paddingTop: paddingTop,
-    paddingHorizontal: 10,
+    paddingHorizontal: 0,
   },
 };
 

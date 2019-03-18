@@ -3,10 +3,10 @@ import { TouchableOpacity } from 'react-native';
 
 type Props = {
   children: React.ReactNode,
-  style?: Object,
   button?: Boolean,
+  style?: Object,
 };
-const Touchable = ({ children, style, button, ...props }): Props => {
+const Touchable = ({ children, style = {}, button, ...props }): Props => {
   const cmpStyle = [styles.container, style];
   if (button) cmpStyle.push(styles.button);
   return (
@@ -21,8 +21,8 @@ const styles = {
     flexGrow: 0,
   },
   button: {
+    backgroundColor: '#333',
     borderRadius: 10,
-    backgroundColor: '#f2f2f2',
     paddingVertical: 10,
     paddingHorizontal: 20,
   },

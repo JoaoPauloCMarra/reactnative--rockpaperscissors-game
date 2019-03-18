@@ -1,10 +1,8 @@
 import React from 'react';
 import compose from 'recompose/compose';
-import lifecycle from 'recompose/lifecycle';
 import withState from 'recompose/withState';
 import withHandlers from 'recompose/withHandlers';
 import { graphql } from 'react-apollo';
-import { auth as FirebaseAuth } from 'react-native-firebase';
 
 import Container from '../components/Container';
 import Text from '../components/Text';
@@ -16,13 +14,12 @@ import Reaction from '../components/Reaction';
 
 import RequestLoading from '../components/RequestLoading';
 import RequestError from '../components/RequestError';
-import UserQuery from '../queries/UserQuery';
 import UserMutation from '../mutations/UserMutation';
 
-const defaultPlayerValue = { matches: 0, wins: 0, losses: 0, draws: 0 };
+const defaultData = { name: '', matches: 0, wins: 0, losses: 0, draws: 0 };
 
 const Warzone = ({
-  data: { player = defaultPlayerValue },
+  data,
   scoreA,
   scoreB,
   showResult,
@@ -33,10 +30,13 @@ const Warzone = ({
   cpuChoice,
   handleReplay,
 }) => {
-  const { matches, wins, losses, draws } = player || defaultPlayerValue;
+  const { name, matches, wins, losses, draws } = data || defaultData;
+  console.log({ name, matches, wins, losses, draws });
   return (
     <Container centered style={styles.container}>
       <Text title>Rock, Paper and Scissors</Text>
+      <Spacer height={20} />
+      <Text title>{name}</Text>
       <Text>
         W: {wins || '0'} L: {losses || '0'} D: {draws || '0'} of Total: {matches || '0'}
       </Text>
@@ -63,22 +63,6 @@ const styles = {
 };
 
 export default compose(
-  withState('playerId', 'setPlayerId', null),
-  lifecycle({
-    componentDidMount() {
-      const Auth = FirebaseAuth();
-      const playerId = Auth && Auth.currentUser ? Auth.currentUser.uid : null;
-      this.props.setPlayerId(playerId);
-    },
-  }),
-  graphql(UserQuery.player, {
-    options: ({ playerId }) => ({
-      variables: {
-        playerId: String(playerId),
-      },
-    }),
-  }),
-  graphql(UserMutation.saveMatch),
   RequestError(),
   RequestLoading(),
   withState('scoreA', 'setScoreA', 0),
@@ -89,6 +73,7 @@ export default compose(
   withState('playerChoice', 'setPlayerChoice', ''),
   withState('cpuChoice', 'setCpuChoice', ''),
   withState('computating', 'setComputating', false),
+  graphql(UserMutation.saveMatch),
   withHandlers({
     handleUserChoice: ({
       setComputating,
@@ -102,8 +87,8 @@ export default compose(
       setScoreA,
       setScoreB,
       mutate,
-      playerId,
-      data: { refetch },
+      data: { id: playerId },
+      refetch,
     }) => choice => {
       setComputating(true);
       const choices = ['rock', 'paper', 'scissors'];
